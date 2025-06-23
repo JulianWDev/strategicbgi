@@ -3,7 +3,12 @@
 {
 	"name": "Python 3",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/python:1-3.12-bullseye"
+	"image": "mcr.microsoft.com/devcontainers/python:1-3.12-bullseye",
+
+	// Mount ~/git/strategicbgi from the host to /workspaces/strategicbgi in the container
+    "workspaceFolder": "/workspaces/strategicbgi",
+    "workspaceMount": "source=${env:HOME}/git/strategicbgi,target=/workspaces/strategicbgi,type=bind"
+
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
