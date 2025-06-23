@@ -7,8 +7,7 @@
 
 	// Mount ~/git/strategicbgi from the host to /workspaces/strategicbgi in the container
     "workspaceFolder": "/workspaces/strategicbgi",
-    "workspaceMount": "source=${env:HOME}/git/strategicbgi,target=/workspaces/strategicbgi,type=bind"
-
+	"workspaceMount": "source=${env:HOME}/git/strategicbgi,target=/workspaces/strategicbgi,type=bind",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -17,7 +16,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	"postCreateCommand": "pip3 install --user -r requirements.txt"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
