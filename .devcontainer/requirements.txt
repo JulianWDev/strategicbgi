@@ -3,3 +3,7 @@ geopandas
 numpy
 scikit-learn
 matplotlib
+requests
+bs4
+rasterio
+shapely
