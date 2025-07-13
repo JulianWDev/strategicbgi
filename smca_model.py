@@ -1,37 +1,38 @@
 # Python implementation of the SMCA model
 # Required inputs:
-# - Three raster files representing the three (kriged/calculated) input criteria
+# - Dict with the arrays representing the three (kriged/calculated) input criteria rasters
 # - A numpy array representing the weights for each criterion
 # - A numpy array indicating the type of each criterion (1 for benefit, 0 for cost)
 import numpy as np
 import rasterio as rio
 
-def smca_model(criterion1, criterion2, criterion3, weights, types):
+def smca_model(data, weights, types, output_file, profile_file):
     """
-    Perform the SMCA model calculation.
-
-    Parameters:
-    criterion1 (numpy.ndarray): First criterion raster.
-    criterion2 (numpy.ndarray): Second criterion raster.
-    criterion3 (numpy.ndarray): Third criterion raster.
-    weights (numpy.ndarray): Weights for each criterion.
-    types (numpy.ndarray): Types of each criterion (1 for benefit, 0 for cost).
-
-    Returns:
-    numpy.ndarray: Resulting raster after applying the SMCA model.
-    """
+    SMCA model implementation.
     
-    # Normalize the criteria
-    norm_criterion1 = (criterion1 - np.min(criterion1)) / (np.max(criterion1) - np.min(criterion1))
-    norm_criterion2 = (criterion2 - np.min(criterion2)) / (np.max(criterion2) - np.min(criterion2))
-    norm_criterion3 = (criterion3 - np.min(criterion3)) / (np.max(criterion3) - np.min(criterion3))
+    Parameters:
+    ksat (rasterio.DatasetReader): Saturated hydraulic conductivity raster.
+    wcs (rasterio.DatasetReader): Water content saturation raster.
+    alt_dev (rasterio.DatasetReader): Altitude deviation raster.
+    weights (np.ndarray): Weights for each criterion.
+    types (np.ndarray): Types of each criterion (1 for benefit, 0 for cost).
+    
+    Returns:
+    np.ndarray: Resulting raster after applying the SMCA model.
+    """
+        
+    # Stack the data
+    data = np.stack((data['ksat'], data['wcs'], data['alt_dev']), axis=-1)
 
     # Apply weights and types
-    result = (
-        weights[0] * norm_criterion1 * types[0] +
-        weights[1] * norm_criterion2 * types[1] +
-        weights[2] * norm_criterion3 * types[2]
-    )
+    weighted_data = data * weights * types[:, np.newaxis]
+    
+    # Sum the weighted data
+    result = np.sum(weighted_data, axis=-1)
+    
+    # Save the result to a file
+    profile = rio.open(profile_file).profile
+    with rio.open(output_file, 'w', **profile) as dst:
+        dst.write(result, 1)
 
     return result
-
