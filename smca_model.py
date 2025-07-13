@@ -6,7 +6,7 @@
 import numpy as np
 import rasterio as rio
 
-def smca_model(ksat_data, wcs_data, alt_dev_data, weights, types):
+def model(ksat_data, wcs_data, alt_dev_data, weights, types):
     # Check if data are the same size/shape, if not raise an error
     if ksat_data.shape != wcs_data.shape or ksat_data.shape != alt_dev_data.shape:
         raise ValueError("Input data must have the same shape")
